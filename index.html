@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>CS 3300 Project 1</title>
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/topojson.v2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+</head>
+
+<body>
+    <svg width="480" height="400">
+        
+    </svg>
+    <script>
+    var svg = d3.select("svg");
+    var UFOdata;
+    var bins;
+    var x = d3.scaleTime()
+    .domain([1906, 2014])
+    .range([0,400]);
+    
+    
+    var y = d3.scaleLinear()
+    .domain([0,38782])
+    .range([0,380]);
+    
+    var histogram = d3.histogram()
+    .value(function(d) { return d.datetime; })
+    .domain(x.domain())
+    .thresholds(x.ticks(10));
+    
+    d3.csv("scrubbed.csv", function(error, data) {
+        if (error) throw error;
+        data.forEach(function (d) {
+            var date = d.datetime.split("/");
+            date = d.datetime.split("/")[2]; //date with year and military time
+            date = Number(date.substring(0,4)); //extract year
+            d.datetime = date;
+        });
+    UFOdata = data;
+    bins = histogram(UFOdata);
+    console.log(bins);
+    y.domain([0, d3.max(bins, function(d) { return d.length; })]);
+    
+    g = svg.append("g");
+    
+    var bar = g.selectAll(".bar")
+    .data(bins)
+    .enter().append("g")
+    .attr("class", "bar");
+    
+    bins.forEach(function (d,i) {
+        console.log(d.length);
+        bar.append("rect")
+        .attr("x", 40*i)
+        .attr("y", 400-y(d.length))
+        .attr("width", 40)
+        .attr("height", y(d.length))
+        .style("opacity", 0.1)
+        .attr("fill", "blue");
+        svg.append("text")
+        .attr("x", 20+(40*i))
+        .attr("y", 400-y(d.length)-10)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "central")
+        .text(d.length)
+        .attr("font-size", 9);
+    });
+    });
+    
+    </script>
+
+</body>
+</html>
