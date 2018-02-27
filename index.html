@@ -112,7 +112,18 @@
     .text("Number of UFO Sightings per Decade")
     .attr("font-size", 5);
     });
+        
+    var flightsData;
+        
+    d3.csv("flights.csv", function(error, data) {
+        if (error) throw error;
+
+        flightsData = data;
+        var year_counter;
+    });
+        
     
+
     </script>
 
 </body>
