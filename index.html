@@ -7,10 +7,11 @@
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//d3js.org/topojson.v2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+    <link type="text/css" rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <svg width="480" height="400">
+    <svg width="481" height="440">
         
     </svg>
     <script>
@@ -41,8 +42,6 @@
         });
     UFOdata = data;
     bins = histogram(UFOdata);
-    console.log(bins);
-    y.domain([0, d3.max(bins, function(d) { return d.length; })]);
     
     g = svg.append("g");
     
@@ -53,12 +52,13 @@
     
     bins.forEach(function (d,i) {
         console.log(d.length);
-        bar.append("rect")
+        svg.append("rect")
         .attr("x", 40*i)
         .attr("y", 400-y(d.length))
         .attr("width", 40)
         .attr("height", y(d.length))
-        .style("opacity", 0.1)
+        .style("opacity", 0.4)
+        .style("stroke", "black")
         .attr("fill", "blue");
         svg.append("text")
         .attr("x", 20+(40*i))
@@ -67,7 +67,50 @@
         .style("alignment-baseline", "central")
         .text(d.length)
         .attr("font-size", 9);
+        svg.append("text")
+        .attr("x", 20+(40*i))
+        .attr("y", 410)
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "central")
+        .text(1900+(10*i)+"'s")
+        .attr("font-size", 9);
     });
+    
+    svg.append("line")
+    .attr("x1", 0)
+    .attr("y1", 400)
+    .attr("x2", 480)
+    .attr("y2", 400)
+    .attr("stroke", "black")
+    .attr("stroke-width", 1.5);
+    
+    svg.append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 40)
+    .attr("height", 20)
+    .attr("fill", "blue")
+    .style("opacity", 0.4);
+    
+    svg.append("rect")
+    .attr("id", "histogram_title")
+    .attr("x", 60)
+    .attr("y", 0)
+    .attr("width", 40)
+    .attr("height", 20)
+    .attr("fill", "none")
+    .attr("stroke", "black")
+    .style("opacity", 0.4);
+    
+    var histogram_title = d3.select("#histogram_title");
+    
+    histogram_title.append("text")
+    .attr("x", 80)
+    .attr("y", 10)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text("Number of UFO Sightings per Decade")
+    .attr("font-size", 5);
     });
     
     </script>
