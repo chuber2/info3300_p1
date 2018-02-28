@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <svg width="481" height="440">
+    <svg width="700" height="500">
         
     </svg>
     <script>
@@ -19,18 +19,38 @@
     var UFOdata;
     var bins;
     var x = d3.scaleTime()
-    .domain([1906, 2014])
-    .range([0,400]);
+    .domain([1970, 2017])
+    .range([0,470]);
     
     
     var y = d3.scaleLinear()
-    .domain([0,38782])
-    .range([0,380]);
+    .domain([0,7357])
+    .range([0,360]);
     
     var histogram = d3.histogram()
     .value(function(d) { return d.datetime; })
     .domain(x.domain())
-    .thresholds(x.ticks(10));
+    .thresholds(x.ticks(47));
+    
+    var xScale = d3.scaleLinear()
+    .domain([1970,2016])
+    .range([0,470]);
+        
+    var yScale = d3.scaleLinear()
+    .domain([48238800,287885038])
+    .range([360,0]);
+    
+    var yScale_for_axis = d3.scaleLinear()
+    .domain([0,7357])
+    .range([360,0]);
+    
+    var yAxisLeft = d3.axisLeft(yScale)
+    .ticks(7);
+    
+    svg.append("g")
+      .style("opacity", 0.65)
+      .attr("stroke", "red")
+      .call(yAxisLeft);
     
     d3.csv("scrubbed.csv", function(error, data) {
         if (error) throw error;
@@ -40,47 +60,50 @@
             date = Number(date.substring(0,4)); //extract year
             d.datetime = date;
         });
-    UFOdata = data;
+    function filterFunction(d) {return d.datetime >= 1970;}
+    var newData = data.filter(filterFunction);
+    UFOdata = newData;
     bins = histogram(UFOdata);
     
-    g = svg.append("g");
-    
-    var bar = g.selectAll(".bar")
-    .data(bins)
-    .enter().append("g")
-    .attr("class", "bar");
     
     bins.forEach(function (d,i) {
-        console.log(d.length);
         svg.append("rect")
-        .attr("x", 40*i)
-        .attr("y", 400-y(d.length))
-        .attr("width", 40)
+        .attr("x", 10*i)
+        .attr("y", 360-y(d.length)+4)
+        .attr("width", 10)
         .attr("height", y(d.length))
         .style("opacity", 0.4)
         .style("stroke", "black")
         .attr("fill", "blue");
         svg.append("text")
-        .attr("x", 20+(40*i))
-        .attr("y", 400-y(d.length)-10)
+        .attr("x", 5+(10*i))
+        .attr("y", 360-y(d.length))
         .style("text-anchor", "middle")
         .style("alignment-baseline", "central")
         .text(d.length)
-        .attr("font-size", 9);
-        svg.append("text")
-        .attr("x", 20+(40*i))
-        .attr("y", 410)
-        .style("text-anchor", "middle")
-        .style("alignment-baseline", "central")
-        .text(1900+(10*i)+"'s")
-        .attr("font-size", 9);
+        .attr("font-size", 6);
     });
-    
+    for (var i = 0; i < 5; i++) {
+    svg.append("text")
+    .attr("x", 5+(100*i))
+    .attr("y", 378)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text(1970+(10*i))
+    .attr("font-size", 9);
+    svg.append("line")
+    .attr("x1", 5+(100*i))
+    .attr("y1", 365)
+    .attr("x2", 5+(100*i))
+    .attr("y2", 370)
+    .attr("stroke", "black")
+    .attr("stroke-width", 2);
+    }
     svg.append("line")
     .attr("x1", 0)
-    .attr("y1", 400)
+    .attr("y1", 365)
     .attr("x2", 480)
-    .attr("y2", 400)
+    .attr("y2", 365)
     .attr("stroke", "black")
     .attr("stroke-width", 1.5);
     
@@ -90,19 +113,45 @@
     .attr("width", 40)
     .attr("height", 20)
     .attr("fill", "blue")
+    .attr("stroke", "grey")
     .style("opacity", 0.4);
     
-    svg.append("rect")
+    svg.append("text")
     .attr("id", "histogram_title")
-    .attr("x", 60)
-    .attr("y", 0)
-    .attr("width", 40)
-    .attr("height", 20)
-    .attr("fill", "none")
-    .attr("stroke", "black")
-    .style("opacity", 0.4);
+    .attr("x", 80)
+    .attr("y", 10)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text("# of UFO Sightings")
+    .attr("font-size", 7);
+    
+    svg.append("line")
+    .attr("x1", 0)
+    .attr("y1", 30)
+    .attr("x2", 40)
+    .attr("y2", 30)
+    .attr("stroke", "red")
+    .style("opacity", 0.5);
+    
+    svg.append("text")
+    .attr("id", "linegraph_title")
+    .attr("x", 80)
+    .attr("y", 30)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text("# of Plane Departures")
+    .attr("font-size", 7);
+    
+    var everything = d3.selectAll("svg > *");
+    everything.attr("transform", "translate(100,20)");
     
     var histogram_title = d3.select("#histogram_title");
+    
+    svg.append("g")
+    .attr("stroke", "blue")
+    .style("opacity", 0.65)
+    .attr("transform", "translate(580,25)")
+    .call(d3.axisRight(yScale_for_axis));
     
     histogram_title.append("text")
     .attr("x", 80)
@@ -111,17 +160,33 @@
     .style("alignment-baseline", "central")
     .text("Number of UFO Sightings per Decade")
     .attr("font-size", 5);
+    
+    svg.append("text")
+    .text("UFO sightings vs Planes in the air")
+    .attr("x", 240)
+    .attr("y", 50)
+    .attr("font-size", 15);
+    
     });
         
     var flightsData;
-        
+    
     d3.csv("flights_by_year.csv", function(error, data) {
         if (error) throw error;
 
         flightsData = data;
-        var year_counter;
+        data.forEach(function (d,i) {
+            if (i+1 != flightsData.length) {
+            svg.append("line")
+            .attr("x1", xScale(d.Year))
+            .attr("y1", yScale(d.totalFlights))
+            .attr("x2", xScale(data[i+1].Year))
+            .attr("y2", yScale(data[i+1].totalFlights))
+            .attr("stroke", "red")
+            .style("opacity", 0.5);
+            }
+        });
     });
-        
     
 
     </script>
