@@ -125,6 +125,15 @@
     .text("# of UFO Sightings")
     .attr("font-size", 7);
     
+    svg.append("text")
+    .attr("id", "histogram_title")
+    .attr("x", 80)
+    .attr("y", 17)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text("Per Year")
+    .attr("font-size", 7);
+    
     svg.append("line")
     .attr("x1", 0)
     .attr("y1", 30)
@@ -142,6 +151,15 @@
     .text("# of Plane Departures")
     .attr("font-size", 7);
     
+    svg.append("text")
+    .attr("id", "linegraph_title")
+    .attr("x", 80)
+    .attr("y", 37)
+    .style("text-anchor", "middle")
+    .style("alignment-baseline", "central")
+    .text("Per Year")
+    .attr("font-size", 7);
+    
     var everything = d3.selectAll("svg > *");
     everything.attr("transform", "translate(100,20)");
     
@@ -152,14 +170,6 @@
     .style("opacity", 0.65)
     .attr("transform", "translate(580,25)")
     .call(d3.axisRight(yScale_for_axis));
-    
-    histogram_title.append("text")
-    .attr("x", 80)
-    .attr("y", 10)
-    .style("text-anchor", "middle")
-    .style("alignment-baseline", "central")
-    .text("Number of UFO Sightings per Decade")
-    .attr("font-size", 5);
     
     svg.append("text")
     .text("UFO sightings vs Planes in the air")
