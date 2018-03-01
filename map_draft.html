@@ -1,0 +1,153 @@
+<html>
+<head>
+<title>Map Test</title>
+<link href="https://fonts.googleapis.com/css?family=Barlow+Condensed" rel="stylesheet">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/topojson.v2.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+<style>
+body { font-family: 'Barlow Condensed', Calibri, sans-serif; }
+svg { border: solid #ccc 1px; }
+path.country { fill: #ccc; stroke: #888; }
+</style>
+</head>
+<body>
+<h3>Testing coordinates on world map</h3>
+
+<!-- Here's an SVG element. Note that in this file it looks like the <div> above. -->
+<svg height="800" width="1200">
+  <!-- Visual elements are represented by tags, which have attributes -->
+</svg>
+
+<script id="notes">
+
+var svg = d3.select("svg");
+
+var projection = d3.geoEquirectangular().scale(75);
+var pathGenerator = d3.geoPath().projection(projection);
+
+var rawData;
+var countries;
+var ufoPoints = [];
+    
+var parseRow = function(row) {
+  return row;
+}
+    
+d3.queue()
+.defer(d3.json, "world-50m.json")
+.defer(d3.csv, "scrubbed.csv", parseRow)
+.await(callback);
+
+function callback(error, rawMap, rawScrubbed) {
+  rawData = rawScrubbed;
+  
+  console.log("Code in the call-back function is only executed when the data file loads.");
+  
+    //map features
+  countries = topojson.feature(rawMap, rawMap.objects.countries);
+    
+     
+    // Remember that Longitude is X! We usually 
+    // write coordinates as lat/long, but always
+    // flip them for plotting.
+    rawData.forEach( function(d,i) {
+        var long = Number(d.longitude);
+        var lat = Number(d.latitude);
+
+        ufoPoints.push([long, lat]) 
+    });
+    
+    function remove(array,index) {
+    
+    if (index !== -1) {
+        array.splice(index, 1);
+    }
+    remove(ufoPoints, 43782);
+        
+    ufoPoints.forEach(function(d,i)
+          { if( isNaN(Number(d[1])) ){
+              console.log(i);
+              console.log(ufoPoints[i][1]); } 
+            });
+    /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
+    
+}
+  showMap();
+};
+
+
+
+
+function showMap() {
+  // Create or modify paths for each country
+  
+  // This is like the "range" function
+  //  in a linear scale.
+  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+  
+  // This function is like our line
+  //  generator function, but it knows
+  //  about projections.
+  pathGenerator = d3.geoPath().projection(projection);
+  
+  // Step 1: grab all existing paths
+  var paths = svg.selectAll("path.country")
+  .data(countries.features);
+  console.log(paths.size());
+  
+  // Step 2: add any additional paths, 
+  //  and merge them with the existing paths
+  paths = paths.enter().append("path")
+  .attr("class", "country").merge(paths);
+  console.log(paths.size());
+  
+  // Update the path coordinates.
+  paths.attr("d", function (country) {
+    return pathGenerator(country);
+  });
+  
+  // Again! Step 1: grab all existing
+  //  circles.
+  var circles = svg.selectAll("circle")
+  .data(ufoPoints);
+  
+  // Step 2: remove unneeded circles if any
+  circles.exit().remove();
+  
+  // Step 3: add additional circles if needed
+  circles = circles.enter().append("circle")
+  .attr("r", 1).merge(circles);
+  
+  // Reset the aesthetic properties.
+  circles
+  .attr("cx", function (d) {
+    return projection(d)[0];
+  })
+  .attr("cy", function (d) {
+    return projection(d)[1];
+  })
+  .style("opacity", 0.3)
+  .attr("fill", "blue")
+  
+}
+
+
+console.log("Code after the d3.json() call is executed immediately.");
+
+</script>
+
+<!-- This block will be automatically filled with syntax-highlighted code from the script below -->
+<pre><code id="display">
+</code></pre>
+
+
+<script>
+document.getElementById("display").innerText = document.getElementById("notes").innerText;
+hljs.initHighlightingOnLoad();
+</script>
+
+
+</body>
+</html>
