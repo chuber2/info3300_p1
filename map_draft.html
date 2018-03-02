@@ -14,6 +14,7 @@ path.country { fill: #ccc; stroke: #888; }
 </head>
 <body>
 <h3>Testing coordinates on world map</h3>
+<a href="index.html"> Visualization 1</a>
 
 <!-- Here's an SVG element. Note that in this file it looks like the <div> above. -->
 <svg height="800" width="1200">
@@ -66,11 +67,11 @@ function callback(error, rawMap, rawScrubbed) {
     }
     remove(ufoPoints, 43782);
         
-    ufoPoints.forEach(function(d,i)
+    /*ufoPoints.forEach(function(d,i)
           { if( isNaN(Number(d[1])) ){
               console.log(i);
               console.log(ufoPoints[i][1]); } 
-            });
+            });*/
     /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
     
 }
@@ -110,6 +111,7 @@ function showMap() {
   
   // Again! Step 1: grab all existing
   //  circles.
+  var testing_points = [[0,0],[30,20], [-30,-20]]
   var circles = svg.selectAll("circle")
   .data(ufoPoints);
   
@@ -137,17 +139,6 @@ function showMap() {
 console.log("Code after the d3.json() call is executed immediately.");
 
 </script>
-
-<!-- This block will be automatically filled with syntax-highlighted code from the script below -->
-<pre><code id="display">
-</code></pre>
-
-
-<script>
-document.getElementById("display").innerText = document.getElementById("notes").innerText;
-hljs.initHighlightingOnLoad();
-</script>
-
 
 </body>
 </html>
