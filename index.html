@@ -23,6 +23,8 @@
     <svg id="hist_svg" width="700" height="450">
         
     </svg>
+        
+    <!--Tron    Orange: #DF740C,TronYellow: #FFE64D,White: #E6FFFF,TronBlue: #6FC3DF,black: #0C141F,-->
     <script>
     var svg = d3.select("#hist_svg");
     var UFOdata;
@@ -73,6 +75,10 @@
     var newData = data.filter(filterFunction);
     UFOdata = newData;
     bins = histogram(UFOdata);
+        
+    var barColor = "#6FC3DF";
+    var lineColor = "#DF740C";
+    var barOpacity = .7;
     
     
     bins.forEach(function (d,i) {
@@ -81,9 +87,9 @@
         .attr("y", 360-y(d.length)+4)
         .attr("width", 10)
         .attr("height", y(d.length))
-        .style("opacity", 0.4)
+        .style("opacity", barOpacity)
         .style("stroke", "black")
-        .attr("fill", "blue");
+        .attr("fill", barColor);
         svg.append("text")
         .attr("x", 5+(10*i))
         .attr("y", 360-y(d.length))
@@ -121,9 +127,9 @@
     .attr("y", 0)
     .attr("width", 40)
     .attr("height", 20)
-    .attr("fill", "blue")
+    .attr("fill", barColor)
     .attr("stroke", "grey")
-    .style("opacity", 0.4);
+    .style("opacity", barOpacity);
     
     svg.append("text")
     .attr("id", "histogram_title")
@@ -148,8 +154,8 @@
     .attr("y1", 30)
     .attr("x2", 40)
     .attr("y2", 30)
-    .attr("stroke", "red")
-    .style("opacity", 0.5);
+    .attr("stroke", lineColor)
+    .style("opacity", 0.7);
     
     svg.append("text")
     .attr("id", "linegraph_title")
@@ -192,6 +198,8 @@
     
     d3.csv("flights_by_year.csv", function(error, data) {
         if (error) throw error;
+        
+        var lineColor = "#DF740C";
 
         flightsData = data;
         data.forEach(function (d,i) {
@@ -201,8 +209,10 @@
             .attr("y1", yScale(d.totalFlights))
             .attr("x2", xScale(data[i+1].Year))
             .attr("y2", yScale(data[i+1].totalFlights))
-            .attr("stroke", "red")
-            .style("opacity", 0.5);
+            .attr("stroke", lineColor)
+            .style("opacity", 1.0)
+            .attr("stroke-width", 3);
+                
             }
         });
     });
