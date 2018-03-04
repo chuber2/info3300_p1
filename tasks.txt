@@ -1,0 +1,24 @@
+1. Combine the files into one file
+Shiva/Chris
+
+2. Add content and text in <p> tags to the visualization
+Shiva - histogram
+Chris - map
+
+3. Filter the UFO dataset to be 15% of original size.
+(Tayyaba) by Sunday Morning
+
+4. Draft the write-up:
+(Tayyaba)
+
+5.Edit the writeup
+Chris and Shiva
+
+6. Truncate histogram to 2013
+Shiva
+
+7. Style the page
+Chris
+
+8. Finalize map
+Chris  
