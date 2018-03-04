@@ -34,18 +34,25 @@ var pathGenerator = d3.geoPath().projection(projection);
 var rawData;
 var countries;
 var ufoPoints = [];
+var airportPoints = [];
     
 var parseRow = function(row) {
+  return row;
+}
+
+var parseRowToo = function(row) {
   return row;
 }
     
 d3.queue()
 .defer(d3.json, "world-50m.json")
 .defer(d3.csv, "ufo_sample.csv", parseRow)
+.defer(d3.csv, "Locations.csv", parseRowToo)
 .await(callback);
 
-function callback(error, rawMap, rawScrubbed) {
+function callback(error, rawMap, rawScrubbed, rawAirports) {
   rawData = rawScrubbed;
+  
   
   console.log("Code in the call-back function is only executed when the data file loads.");
   
@@ -61,6 +68,13 @@ function callback(error, rawMap, rawScrubbed) {
         var lat = Number(d.latitude);
 
         ufoPoints.push([long, lat]) 
+    });
+    
+    rawAirports.forEach( function(d,i) {
+        var long = Number(d.Longitude);
+        var lat = Number(d.Latitude);
+
+        airportPoints.push([long, lat]) 
     });
     
     /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
@@ -124,7 +138,7 @@ function showMap() {
   
   // Step 3: add additional circles if needed
   circles = circles.enter().append("circle")
-  .attr("r", 1).merge(circles);
+  .attr("r", 1.4).merge(circles);
   
   // Reset the aesthetic properties.
   circles
@@ -134,8 +148,28 @@ function showMap() {
   .attr("cy", function (d) {
     return projection(d)[1];
   })
-  .style("opacity", 1.0)
-  .attr("fill", "#A2CC3E" )
+  .style("opacity", 0.7)
+  .attr("fill", "#A2CC3E" );
+    
+  circles = circles.enter().append("circle")
+  .attr("r", 1.4).merge(circles)
+  .data(airportPoints)
+  .attr("r", 2)
+  .style("opacity", .6)
+  .attr("fill", "red" )
+  .attr("cx", function (d) {
+    return projection(d)[0];
+  })
+  .attr("cy", function (d) {
+    return projection(d)[1];
+  });
+  
+  svg.append("text")
+    .attr("x", 20)
+    .attr("y", 550)
+    .text("Each green circle represents one UFO sighting")
+    .attr("fill", "#A2CC3E");
+    
   
 }
 
