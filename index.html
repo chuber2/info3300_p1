@@ -30,8 +30,8 @@
     var UFOdata;
     var bins;
     var x = d3.scaleTime()
-    .domain([1970, 2017])
-    .range([0,470]);
+    .domain([1970, 2013])
+    .range([0,430]);
     
     
     var y = d3.scaleLinear()
@@ -41,11 +41,11 @@
     var histogram = d3.histogram()
     .value(function(d) { return d.datetime; })
     .domain(x.domain())
-    .thresholds(x.ticks(47));
+    .thresholds(x.ticks(43));
     
     var xScale = d3.scaleLinear()
-    .domain([1970,2016])
-    .range([0,470]);
+    .domain([1970,2013])
+    .range([5,435]);
         
     var yScale = d3.scaleLinear()
     .domain([48238800,287885038])
@@ -71,7 +71,7 @@
             date = Number(date.substring(0,4)); //extract year
             d.datetime = date;
         });
-    function filterFunction(d) {return d.datetime >= 1970;}
+    function filterFunction(d) {return d.datetime >= 1970 && d.datetime < 2014;} //cut off data at 1970
     var newData = data.filter(filterFunction);
     UFOdata = newData;
     bins = histogram(UFOdata);
@@ -90,13 +90,24 @@
         .style("opacity", barOpacity)
         .style("stroke", "black")
         .attr("fill", barColor);
-        svg.append("text")
+        if (d.length == 7357) {
+        svg.append("text") //plot the max value(height) of the histogram bar
         .attr("x", 5+(10*i))
         .attr("y", 360-y(d.length))
         .style("text-anchor", "middle")
         .style("alignment-baseline", "central")
         .text(d.length)
-        .attr("font-size", 6);
+        .attr("font-size", 7);
+        }
+        if (d.length == 130) {
+        svg.append("text") //plot the min value(height) of the histogram bar
+        .attr("x", 5+(10*i))
+        .attr("y", 360-y(d.length))
+        .style("text-anchor", "middle")
+        .style("alignment-baseline", "central")
+        .text(d.length)
+        .attr("font-size", 7);
+        }
     });
     for (var i = 0; i < 5; i++) {
     svg.append("text")
@@ -117,7 +128,7 @@
     svg.append("line")
     .attr("x1", 0)
     .attr("y1", 365)
-    .attr("x2", 480)
+    .attr("x2", 440)
     .attr("y2", 365)
     .attr("stroke", "black")
     .attr("stroke-width", 1.5);
@@ -178,12 +189,10 @@
     var everything = d3.selectAll("svg > *");
     everything.attr("transform", "translate(100,20)");
     
-    var histogram_title = d3.select("#histogram_title");
-    
     svg.append("g")
     .attr("stroke", "blue")
     .style("opacity", 0.65)
-    .attr("transform", "translate(580,25)")
+    .attr("transform", "translate(540,25)")
     .call(d3.axisRight(yScale_for_axis));
     
     svg.append("text")
@@ -198,11 +207,11 @@
     
     d3.csv("flights_by_year.csv", function(error, data) {
         if (error) throw error;
-        
+        function filterFunction(d) {return d.Year >= 1970 && d.Year < 2014;} //cut off data at 1970 and at 2013
+        var temp = data.filter(filterFunction);
+        flightsData = temp;
         var lineColor = "#DF740C";
-
-        flightsData = data;
-        data.forEach(function (d,i) {
+        flightsData.forEach(function (d,i) {
             if (i+1 != flightsData.length) {
             svg.append("line")
             .attr("x1", xScale(d.Year))
