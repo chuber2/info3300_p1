@@ -2,30 +2,33 @@
 <head>
 <title>Map Test</title>
 <link href="https://fonts.googleapis.com/css?family=Barlow+Condensed" rel="stylesheet">
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/default.min.css">
+
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/topojson.v2.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
-<style>
-body { font-family: 'Barlow Condensed', Calibri, sans-serif; }
-svg { border: solid #ccc 1px; }
-path.country { fill: #ccc; stroke: #888; }
-</style>
+<link type="text/css" rel="stylesheet" href="css/style.css">
+
 </head>
+<style>
+
+
+</style>
 <body>
 <h3>Testing coordinates on world map</h3>
 <a href="index.html"> Visualization 1</a>
 
-<!-- Here's an SVG element. Note that in this file it looks like the <div> above. -->
-<svg height="800" width="1200">
+<svg id = "map_svg" height="700" width="1400">
   <!-- Visual elements are represented by tags, which have attributes -->
 </svg>
 
 <script id="notes">
 
-var svg = d3.select("svg");
+var svg = d3.select("#map_svg");
 
-var projection = d3.geoEquirectangular().scale(75);
+
+var projection = d3.geoEquirectangular().scale(75)
+   
+//var projection = d3.geoConicConformal().scale(3000);
+
 var pathGenerator = d3.geoPath().projection(projection);
 
 var rawData;
@@ -38,7 +41,7 @@ var parseRow = function(row) {
     
 d3.queue()
 .defer(d3.json, "world-50m.json")
-.defer(d3.csv, "scrubbed.csv", parseRow)
+.defer(d3.csv, "ufo_sample.csv", parseRow)
 .await(callback);
 
 function callback(error, rawMap, rawScrubbed) {
@@ -60,6 +63,7 @@ function callback(error, rawMap, rawScrubbed) {
         ufoPoints.push([long, lat]) 
     });
     
+    /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
     function remove(array,index) {
     
     if (index !== -1) {
@@ -72,7 +76,7 @@ function callback(error, rawMap, rawScrubbed) {
               console.log(i);
               console.log(ufoPoints[i][1]); } 
             });*/
-    /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
+    
     
 }
   showMap();
@@ -96,13 +100,13 @@ function showMap() {
   // Step 1: grab all existing paths
   var paths = svg.selectAll("path.country")
   .data(countries.features);
-  console.log(paths.size());
+  //console.log(paths.size());
   
   // Step 2: add any additional paths, 
   //  and merge them with the existing paths
   paths = paths.enter().append("path")
   .attr("class", "country").merge(paths);
-  console.log(paths.size());
+  //console.log(paths.size());
   
   // Update the path coordinates.
   paths.attr("d", function (country) {
@@ -130,8 +134,8 @@ function showMap() {
   .attr("cy", function (d) {
     return projection(d)[1];
   })
-  .style("opacity", 0.3)
-  .attr("fill", "blue")
+  .style("opacity", 1.0)
+  .attr("fill", "#A2CC3E" )
   
 }
 

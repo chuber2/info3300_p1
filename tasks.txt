@@ -16,9 +16,11 @@ Chris and Shiva
 
 6. Truncate histogram to 2013
 Shiva
-
+\
 7. Style the page
 Chris
 
 8. Finalize map
 Chris  
+
+9. Make Histogram

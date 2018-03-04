@@ -20,7 +20,7 @@ body {
     margin: auto;
     float: right;
     width: 80%;
-/*    background-color: #635F45;*/
+
     background-color: #030800;
     color: #A2CC3E;
     text-align: center;
@@ -48,6 +48,16 @@ p{
     
     margin: auto;
 }
+svg { 
+    border: solid #ccc 1px; 
+}
+#map_svg {
+    background-color: black;
+    border: solid #A2CC3E 3px;
+    
+}
+path.country { fill: black; stroke: #888; }
+
 
 
 
