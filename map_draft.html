@@ -194,7 +194,8 @@ function showUSAMap() {
   // This function is like our line
   //  generator function, but it knows
   //  about projections.
-  var projection_usa = d3.geoAlbers()
+  var projection_usa = d3.geoAlbers().scale(1200).translate([500,290])
+  //var projection_usa = d3.geoAlbers()
   var pathGenerator_usa = d3.geoPath().projection(projection_usa);
   
   // Step 1: grab all existing paths
