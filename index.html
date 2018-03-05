@@ -133,13 +133,14 @@
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text(1970+(10*i))
-    .attr("font-size", 9);
+    .attr("font-size", 9)
+    .attr("fill", axisColor);
     svg.append("line") // add tick marks for axes
     .attr("x1", 5+(100*i))
     .attr("y1", 365)
     .attr("x2", 5+(100*i))
     .attr("y2", 370)
-    .attr("stroke", "black")
+    .attr("stroke", axisColor)
     .attr("stroke-width", 2);
     }
     for (var j = 0; j < 44; j++) {
@@ -148,7 +149,7 @@
     .attr("y1", 365)
     .attr("x2", 5+(10*j))
     .attr("y2", 367.5)
-    .attr("stroke", "black")
+    .attr("stroke", axisColor)
     .attr("stroke-width", 1);
     }
     svg.append("line") // actual x axis
@@ -156,7 +157,7 @@
     .attr("y1", 365)
     .attr("x2", 440)
     .attr("y2", 365)
-    .attr("stroke", "black")
+    .attr("stroke", axisColor)
     .attr("stroke-width", 1.5);
     
     svg.append("line") //legend: line representing UFO data
@@ -174,6 +175,7 @@
     .attr("y", 10)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
+    .attr("fill", axisColor)
     .text("# of UFO Sightings")
     .attr("font-size", 12);
     
@@ -181,6 +183,7 @@
     .attr("id", "histogram_title")
     .attr("x", 85)
     .attr("y", 19)
+    .attr("fill", axisColor)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
@@ -201,6 +204,7 @@
     .attr("y", 30)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
+    .attr("fill", axisColor)
     .text("# of Plane Departures")
     .attr("font-size", 12);
     
@@ -208,6 +212,7 @@
     .attr("id", "linegraph_title")
     .attr("x", 89)
     .attr("y", 39)
+    .attr("fill", axisColor)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
@@ -219,6 +224,7 @@
     svg.append("g") // plot Y axis for Flights data
     .attr("stroke", barColor)
     .style("opacity", 1.0)
+    .attr("class", "axis")
     .attr("transform", "translate(580,25)")
     .call(d3.axisRight(yScale_for_axis));
     
@@ -226,17 +232,20 @@
     .text("UFO sightings") 
     .attr("x", 385)
     .attr("y", 50)
-    .attr("font-size", 19);
+    .attr("font-size", 19)
+    .attr("fill", axisColor);
     svg.append("text") //Title
     .text("v.") 
     .attr("x", 440)
     .attr("y", 70)
-    .attr("font-size", 19);
+    .attr("font-size", 19)
+    .attr("fill", axisColor);
     svg.append("text") //Title
     .text("Planes in Air") 
     .attr("x", 390)
     .attr("y", 85)
-    .attr("font-size", 19);
+    .attr("font-size", 19)
+    .attr("fill", axisColor);
     
     });
         
@@ -276,6 +285,7 @@
     var countries;
     var ufoPoints = [];
     var airportPoints = [];
+    var importantPoints = [];
 
     var parseRow = function(row) {
     return row;
@@ -284,14 +294,21 @@
     var parseRowToo = function(row) {
     return row;
     }
+    
+    //USA MAP
+    var svg3 = d3.select("#content").append("svg")
+        .attr("id", "us_svg")
+        .attr("width", 1200)
+        .attr("height", 600);
 
     d3.queue()
     .defer(d3.json, "world-50m.json")
     .defer(d3.csv, "ufo_sample.csv", parseRow)
     .defer(d3.csv, "Locations.csv", parseRowToo)
+    .defer(d3.csv, "important_airports.csv", parseRowToo)
     .await(callback);
 
-    function callback(error, rawMap, rawScrubbed, rawAirports) {
+    function callback(error, rawMap, rawScrubbed, rawAirports, rawImportant) {
     rawData = rawScrubbed;
 
 
@@ -317,8 +334,15 @@
 
         airportPoints.push([long, lat]) 
     });
+        
+    rawImportant.forEach( function(d,i) {
+        var long = Number(d.longitude);
+        var lat = Number(d.latitude);
 
-    /*https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
+        importantPoints.push([long, lat]) 
+    });
+
+    /* remove function inspired by https://blog.mariusschulz.com/2016/07/16/removing-elements-from-javascript-arrays*/
     function remove(array,index) {
 
     if (index !== -1) {
@@ -335,6 +359,7 @@
 
     }
     showMap();
+    showUSAMap();
     };
 
 
@@ -392,18 +417,6 @@
     .style("opacity", 0.7)
     .attr("fill", "#A2CC3E" );
 
-    circles = circles.enter().append("circle")
-    .attr("r", 1.4).merge(circles)
-    .data(airportPoints)
-    .attr("r", 2)
-    .style("opacity", .6)
-    .attr("fill", "red" )
-    .attr("cx", function (d) {
-    return projection(d)[0];
-    })
-    .attr("cy", function (d) {
-    return projection(d)[1];
-    });
 
     svg2.append("text")
     .attr("x", 20)
@@ -412,6 +425,94 @@
     .attr("fill", "#A2CC3E");
 
 
+    }
+        
+    function showUSAMap() {
+      // Create or modify paths for each country
+
+      // This is like the "range" function
+      //  in a linear scale.
+      //projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+
+      // This function is like our line
+      //  generator function, but it knows
+      //  about projections.
+      var projection_usa = d3.geoAlbers()
+      var pathGenerator_usa = d3.geoPath().projection(projection_usa);
+
+      // Step 1: grab all existing paths
+      var paths_usa = svg3.selectAll("path.country")
+      .data(countries.features);
+      //console.log(paths.size());
+
+      // Step 2: add any additional paths, 
+      //  and merge them with the existing paths
+      paths_usa = paths_usa.enter().append("path")
+      .attr("class", "country").merge(paths_usa);
+      //console.log(paths.size());
+
+      // Update the path coordinates.
+      paths_usa.attr("d", function (country) {
+        return pathGenerator_usa(country);
+      });
+
+      // Again! Step 1: grab all existing
+      //  circles.
+      var testing_points = [[0,0],[30,20], [-30,-20]]
+      var circles_usa = svg3.selectAll("circle")
+      .data(ufoPoints);
+
+      // Step 2: remove unneeded circles if any
+      circles_usa.exit().remove();
+
+      // Step 3: add additional circles if needed
+      circles_usa = circles_usa.enter().append("circle")
+      .attr("r", 1.4).merge(circles_usa);
+
+      // Reset the aesthetic properties.
+      circles_usa
+      .attr("cx", function (d) {
+        return projection_usa(d)[0];
+      })
+      .attr("cy", function (d) {
+        return projection_usa(d)[1];
+      })
+      .style("opacity", 0.7)
+      .attr("fill", "#A2CC3E" );
+
+      circles_usa = circles_usa.enter().append("circle")
+      .attr("r", 1.4).merge(circles_usa)
+      .data(airportPoints)
+      .attr("r", 2)
+      .style("opacity", 1.0)
+      .attr("fill", "red" )
+      .attr("cx", function (d) {
+        return projection_usa(d)[0];
+      })
+      .attr("cy", function (d) {
+        return projection_usa(d)[1];
+      });
+
+
+     //important points
+     circles_usa = circles_usa.enter().append("circle")
+      .attr("r", 5).merge(circles_usa)
+      .data(importantPoints)
+      .attr("r", 15)
+      .style("opacity", 1.0)
+      .attr("fill", "purple" )
+      .attr("cx", function (d) {
+        return projection_usa(d)[0];
+      })
+      .attr("cy", function (d) {
+        return projection_usa(d)[1];
+      });
+
+      svg3.append("text")
+        .attr("x", 20)
+        .attr("y", 550)
+        .text("Each green circle represents one UFO sighting")
+        .attr("fill", "#A2CC3E");
     }
 
 
