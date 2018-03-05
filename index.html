@@ -162,7 +162,7 @@
     svg.append("line") //legend: line representing UFO data
     .attr("x1", 5)
     .attr("y1", 10)
-    .attr("x2", 45)
+    .attr("x2", 25)
     .attr("y2", 10)
     .attr("stroke-width", 3)
     .attr("stroke", barColor)
@@ -175,21 +175,21 @@
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("# of UFO Sightings")
-    .attr("font-size", 7);
+    .attr("font-size", 12);
     
     svg.append("text") // legend: more text for UFO data legend
     .attr("id", "histogram_title")
     .attr("x", 85)
-    .attr("y", 17)
+    .attr("y", 19)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
-    .attr("font-size", 7);
+    .attr("font-size", 12);
     
     svg.append("line") // legend: line representing Flights data
     .attr("x1", 5)
     .attr("y1", 30)
-    .attr("x2", 45)
+    .attr("x2", 25)
     .attr("y2", 30)
     .attr("stroke", lineColor)
     .attr("stroke-width", 3)
@@ -197,36 +197,46 @@
     
     svg.append("text") // legend: text saying this line represents flights data
     .attr("id", "linegraph_title")
-    .attr("x", 85)
+    .attr("x", 89)
     .attr("y", 30)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("# of Plane Departures")
-    .attr("font-size", 7);
+    .attr("font-size", 12);
     
     svg.append("text") // more text for Flights data legend
     .attr("id", "linegraph_title")
-    .attr("x", 85)
-    .attr("y", 37)
+    .attr("x", 89)
+    .attr("y", 39)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
-    .attr("font-size", 7);
+    .attr("font-size", 12);
     
     var everything = d3.selectAll("svg > *"); // shift svg so everything is seen 
-    everything.attr("transform", "translate(100,20)");
+    everything.attr("transform", "translate(140,20)");
     
     svg.append("g") // plot Y axis for Flights data
     .attr("stroke", barColor)
     .style("opacity", 1.0)
-    .attr("transform", "translate(540,25)")
+    .attr("transform", "translate(580,25)")
     .call(d3.axisRight(yScale_for_axis));
     
     svg.append("text") //Title
-    .text("UFO sightings vs Planes in the air") 
-    .attr("x", 240)
+    .text("UFO sightings") 
+    .attr("x", 385)
     .attr("y", 50)
-    .attr("font-size", 15);
+    .attr("font-size", 19);
+    svg.append("text") //Title
+    .text("v.") 
+    .attr("x", 440)
+    .attr("y", 70)
+    .attr("font-size", 19);
+    svg.append("text") //Title
+    .text("Planes in Air") 
+    .attr("x", 390)
+    .attr("y", 85)
+    .attr("font-size", 19);
     
     });
         
