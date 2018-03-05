@@ -62,15 +62,14 @@
       .style("opacity", 0.65)
       .attr("stroke", "red")
       .call(yAxisLeft);
-    
     d3.csv("scrubbed.csv", function(error, data) {
         if (error) throw error;
         data.forEach(function (d) {
             var date = d.datetime.split("/");
-            date = d.datetime.split("/")[2]; //date with year and military time
+            date = date[2]; //date with year and military time
             date = Number(date.substring(0,4)); //extract year
             d.datetime = date;
-        });
+            });
     function filterFunction(d) {return d.datetime >= 1970 && d.datetime < 2014;} //cut off data at 1970
     var newData = data.filter(filterFunction);
     UFOdata = newData;
