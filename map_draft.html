@@ -38,6 +38,12 @@ var parseRow = function(row) {
 var parseRowToo = function(row) {
   return row;
 }
+
+//USA MAP
+var svg3 = d3.select("body").append("svg")
+    .attr("id", "us_svg")
+    .attr("width", 1200)
+    .attr("height", 600);
     
 d3.queue()
 .defer(d3.json, "world-50m.json")
@@ -89,6 +95,7 @@ function callback(error, rawMap, rawScrubbed, rawAirports) {
     
 }
   showMap();
+  showUSAMap();
 };
 
 
@@ -99,7 +106,7 @@ function showMap() {
   
   // This is like the "range" function
   //  in a linear scale.
-  projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+  //projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
   
   // This function is like our line
   //  generator function, but it knows
@@ -164,12 +171,82 @@ function showMap() {
     .attr("y", 550)
     .text("Each green circle represents one UFO sighting")
     .attr("fill", "#A2CC3E");
-    
-  
 }
+    
 
-
-console.log("Code after the d3.json() call is executed immediately.");
+    
+function showUSAMap() {
+  // Create or modify paths for each country
+  
+  // This is like the "range" function
+  //  in a linear scale.
+  //projection.fitExtent([[0,0], [svg.attr("width"), svg.attr("height")]], countries);
+  
+  // This function is like our line
+  //  generator function, but it knows
+  //  about projections.
+  var projection_usa = d3.geoAlbers()
+  var pathGenerator_usa = d3.geoPath().projection(projection_usa);
+  
+  // Step 1: grab all existing paths
+  var paths_usa = svg3.selectAll("path.country")
+  .data(countries.features);
+  //console.log(paths.size());
+  
+  // Step 2: add any additional paths, 
+  //  and merge them with the existing paths
+  paths_usa = paths_usa.enter().append("path")
+  .attr("class", "country").merge(paths_usa);
+  //console.log(paths.size());
+  
+  // Update the path coordinates.
+  paths_usa.attr("d", function (country) {
+    return pathGenerator_usa(country);
+  });
+  
+  // Again! Step 1: grab all existing
+  //  circles.
+  var testing_points = [[0,0],[30,20], [-30,-20]]
+  var circles_usa = svg3.selectAll("circle")
+  .data(ufoPoints);
+  
+  // Step 2: remove unneeded circles if any
+  circles_usa.exit().remove();
+  
+  // Step 3: add additional circles if needed
+  circles_usa = circles_usa.enter().append("circle")
+  .attr("r", 1.4).merge(circles_usa);
+  
+  // Reset the aesthetic properties.
+  circles_usa
+  .attr("cx", function (d) {
+    return projection_usa(d)[0];
+  })
+  .attr("cy", function (d) {
+    return projection_usa(d)[1];
+  })
+  .style("opacity", 0.7)
+  .attr("fill", "#A2CC3E" );
+    
+  circles_usa = circles_usa.enter().append("circle")
+  .attr("r", 1.4).merge(circles_usa)
+  .data(airportPoints)
+  .attr("r", 2)
+  .style("opacity", 1.0)
+  .attr("fill", "red" )
+  .attr("cx", function (d) {
+    return projection_usa(d)[0];
+  })
+  .attr("cy", function (d) {
+    return projection_usa(d)[1];
+  });
+  
+  svg3.append("text")
+    .attr("x", 20)
+    .attr("y", 550)
+    .text("Each green circle represents one UFO sighting")
+    .attr("fill", "#A2CC3E");
+}
 
 </script>
 
