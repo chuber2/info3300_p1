@@ -12,14 +12,14 @@
 </head>
 
 <body>
-    <div id="sidebar">
+    <!--<div id="sidebar">
         <p> This is the sidebar!</p>
-    </div>
+    </div>-->
     <div id = "content">
     <h1> UFOs: Unsubstantiated False Observations</h1>
-    <h2> by Tayyaba Arshad, Chris Huber, Shiva Lakshmanan</h2>
+    <h2> by Tayyaba Arshad, Chris Huber, and Shiva Lakshmanan</h2>
    
-    <p>This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test.This is a test. </p>
+    <p>UFOs (Unidentified Flying Objects) are constantly referenced as proof that alien life is out there. But are the sightings for real? Using data from National UFO Reporting Center, we argue that UFO sightings are mistakes and fakes. </p>
     <svg id="hist_svg" width="700" height="450">
     </svg>
         
@@ -30,6 +30,12 @@
         
     <!--Tron    Orange: #DF740C,TronYellow: #FFE64D,White: #E6FFFF,TronBlue: #6FC3DF,black: #0C141F,-->
     <script>
+        
+    var barColor = "#6FC3DF";
+    var lineColor = "#DF740C";
+    var axisColor = "#FDF6ED";
+    var barOpacity = .7;
+        
     var svg = d3.select("#hist_svg");
     var UFOdata;
     var bins;
@@ -63,8 +69,9 @@
     .ticks(7);
     
     svg.append("g")
-      .style("opacity", 0.65)
-      .attr("stroke", "red")
+      .style("opacity", 1.0)
+      .attr("stroke", lineColor)
+      .attr("class", "axis")
       .call(yAxisLeft);
     d3.csv("scrubbed.csv", function(error, data) {
         if (error) throw error;
@@ -78,11 +85,6 @@
     var newData = data.filter(filterFunction);
     UFOdata = newData;
     bins = histogram(UFOdata);
-        
-    var barColor = "#6FC3DF";
-    var lineColor = "#DF740C";
-    var barOpacity = .7;
-    
     
     bins.forEach(function (d,i) {
         svg.append("rect")
@@ -96,20 +98,31 @@
         if (d.length == 7357) {
         svg.append("text") //plot the max value(height) of the histogram bar
         .attr("x", 5+(10*i))
-        .attr("y", 360-y(d.length))
+        .attr("y", 350-y(d.length))
         .style("text-anchor", "middle")
         .style("alignment-baseline", "central")
         .text(d.length)
-        .attr("font-size", 7);
+        .attr("font-size", 16)
+        .attr("fill", barColor);
         }
         if (d.length == 130) {
-        svg.append("text") //plot the min value(height) of the histogram bar
-        .attr("x", 5+(10*i))
-        .attr("y", 360-y(d.length))
-        .style("text-anchor", "middle")
-        .style("alignment-baseline", "central")
-        .text(d.length)
-        .attr("font-size", 7);
+            svg.append("text") //plot the min value(height) of the histogram bar
+                .attr("x", 5+(10*i))
+                .attr("y", 325-y(d.length))
+                .style("text-anchor", "middle")
+                .style("alignment-baseline", "central")
+                .text(d.length)
+                .attr("font-size", 16)
+                .attr("fill", barColor);
+
+            //add reference line
+            svg.append("line")
+                .attr("x1", 5+(10*i))
+                .attr("y1", 360-y(d.length))
+                .attr("x2", 5+(10*i))
+                .attr("y2", 335-y(d.length))
+                .attr("stroke", barColor);
+        
         }
     });
     for (var i = 0; i < 5; i++) {
@@ -125,7 +138,7 @@
     .attr("y1", 365)
     .attr("x2", 5+(100*i))
     .attr("y2", 370)
-    .attr("stroke", "black")
+    .attr("stroke", axisColor)
     .attr("stroke-width", 2);
     }
     svg.append("line")
@@ -133,7 +146,7 @@
     .attr("y1", 365)
     .attr("x2", 440)
     .attr("y2", 365)
-    .attr("stroke", "black")
+    .attr("stroke", axisColor)
     .attr("stroke-width", 1.5);
     
     svg.append("rect")
@@ -193,8 +206,8 @@
     everything.attr("transform", "translate(100,20)");
     
     svg.append("g")
-    .attr("stroke", "blue")
-    .style("opacity", 0.65)
+    .attr("stroke", barColor)
+    .style("opacity", 1.0)
     .attr("transform", "translate(540,25)")
     .call(d3.axisRight(yScale_for_axis));
     
