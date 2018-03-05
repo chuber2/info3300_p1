@@ -39,36 +39,33 @@
     var svg = d3.select("#hist_svg");
     var UFOdata;
     var bins;
-    var x = d3.scaleTime()
+    
+    var x = d3.scaleTime() // X scale for the line Graph
     .domain([1970, 2013])
     .range([0,430]);
     
     
-    var y = d3.scaleLinear()
+    var y = d3.scaleLinear() //Y scale for the UFO data
     .domain([0,7357])
-    .range([0,360]);
+    .range([360,0]);
     
-    var histogram = d3.histogram()
+    var histogram = d3.histogram() //Create the histogram function to create the UFO line graph
     .value(function(d) { return d.datetime; })
     .domain(x.domain())
     .thresholds(x.ticks(43));
-    
-    var xScale = d3.scaleLinear()
-    .domain([1970,2013])
-    .range([5,435]);
         
-    var yScale = d3.scaleLinear()
+    var yScale = d3.scaleLinear() // Y scale for the Flights data
     .domain([48238800,287885038])
     .range([360,0]);
     
-    var yScale_for_axis = d3.scaleLinear()
+    var yScale_for_axis = d3.scaleLinear() //Faux Y scale in order to create y axis of UFO data
     .domain([0,7357])
     .range([360,0]);
     
     var yAxisLeft = d3.axisLeft(yScale)
     .ticks(7);
     
-    svg.append("g")
+    svg.append("g") // append flights data axis
       .style("opacity", 1.0)
       .attr("stroke", lineColor)
       .attr("class", "axis")
@@ -81,24 +78,27 @@
             date = Number(date.substring(0,4)); //extract year
             d.datetime = date;
             });
-    function filterFunction(d) {return d.datetime >= 1970 && d.datetime < 2014;} //cut off data at 1970
+    function filterFunction(d) {return d.datetime >= 1970 && d.datetime < 2014;} //cut off data at 1970 and years > 2014
     var newData = data.filter(filterFunction);
-    UFOdata = newData;
-    bins = histogram(UFOdata);
+    UFOdata = newData; 
+    bins = histogram(UFOdata); // the array we use to actually plot the line graph for UFO data
     
     bins.forEach(function (d,i) {
-        svg.append("rect")
-        .attr("x", 10*i)
-        .attr("y", 360-y(d.length)+4)
-        .attr("width", 10)
-        .attr("height", y(d.length))
-        .style("opacity", barOpacity)
-        .style("stroke", "black")
-        .attr("fill", barColor);
+        if (i+1 != bins.length) {
+            svg.append("line") //plot UFO data
+            .attr("x1", x(1970+i))
+            .attr("y1", y(d.length))
+            .attr("x2", x(1970+i+1))
+            .attr("y2", y(bins[i+1].length))
+            .attr("stroke", barColor)
+            .style("opacity", 1.0)
+            .attr("stroke-width", 3);
+                
+            }
         if (d.length == 7357) {
         svg.append("text") //plot the max value(height) of the histogram bar
         .attr("x", 5+(10*i))
-        .attr("y", 350-y(d.length))
+        .attr("y", y(d.length)-10)
         .style("text-anchor", "middle")
         .style("alignment-baseline", "central")
         .text(d.length)
@@ -108,7 +108,7 @@
         if (d.length == 130) {
             svg.append("text") //plot the min value(height) of the histogram bar
                 .attr("x", 5+(10*i))
-                .attr("y", 325-y(d.length))
+                .attr("y", y(d.length)-20)
                 .style("text-anchor", "middle")
                 .style("alignment-baseline", "central")
                 .text(d.length)
@@ -118,101 +118,112 @@
             //add reference line
             svg.append("line")
                 .attr("x1", 5+(10*i))
-                .attr("y1", 360-y(d.length))
+                .attr("y1", y(d.length)-12)
                 .attr("x2", 5+(10*i))
-                .attr("y2", 335-y(d.length))
+                .attr("y2", y(d.length))
+                .attr("stroke-width", 2)
                 .attr("stroke", barColor);
         
         }
     });
     for (var i = 0; i < 5; i++) {
-    svg.append("text")
+    svg.append("text") //add values for x axes
     .attr("x", 5+(100*i))
     .attr("y", 378)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text(1970+(10*i))
     .attr("font-size", 9);
-    svg.append("line")
+    svg.append("line") // add tick marks for axes
     .attr("x1", 5+(100*i))
     .attr("y1", 365)
     .attr("x2", 5+(100*i))
     .attr("y2", 370)
-    .attr("stroke", axisColor)
+    .attr("stroke", "black")
     .attr("stroke-width", 2);
     }
-    svg.append("line")
+    for (var j = 0; j < 44; j++) {
+    svg.append("line") // add secondary tick marks for x axis
+    .attr("x1", 5+(10*j))
+    .attr("y1", 365)
+    .attr("x2", 5+(10*j))
+    .attr("y2", 367.5)
+    .attr("stroke", "black")
+    .attr("stroke-width", 1);
+    }
+    svg.append("line") // actual x axis
     .attr("x1", 0)
     .attr("y1", 365)
     .attr("x2", 440)
     .attr("y2", 365)
-    .attr("stroke", axisColor)
+    .attr("stroke", "black")
     .attr("stroke-width", 1.5);
     
-    svg.append("rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", 40)
-    .attr("height", 20)
-    .attr("fill", barColor)
-    .attr("stroke", "grey")
+    svg.append("line") //legend: line representing UFO data
+    .attr("x1", 5)
+    .attr("y1", 10)
+    .attr("x2", 45)
+    .attr("y2", 10)
+    .attr("stroke-width", 3)
+    .attr("stroke", barColor)
     .style("opacity", barOpacity);
     
-    svg.append("text")
+    svg.append("text") // legend: text saying this line is for UFO data
     .attr("id", "histogram_title")
-    .attr("x", 80)
+    .attr("x", 85)
     .attr("y", 10)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("# of UFO Sightings")
     .attr("font-size", 7);
     
-    svg.append("text")
+    svg.append("text") // legend: more text for UFO data legend
     .attr("id", "histogram_title")
-    .attr("x", 80)
+    .attr("x", 85)
     .attr("y", 17)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
     .attr("font-size", 7);
     
-    svg.append("line")
-    .attr("x1", 0)
+    svg.append("line") // legend: line representing Flights data
+    .attr("x1", 5)
     .attr("y1", 30)
-    .attr("x2", 40)
+    .attr("x2", 45)
     .attr("y2", 30)
     .attr("stroke", lineColor)
+    .attr("stroke-width", 3)
     .style("opacity", 0.7);
     
-    svg.append("text")
+    svg.append("text") // legend: text saying this line represents flights data
     .attr("id", "linegraph_title")
-    .attr("x", 80)
+    .attr("x", 85)
     .attr("y", 30)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("# of Plane Departures")
     .attr("font-size", 7);
     
-    svg.append("text")
+    svg.append("text") // more text for Flights data legend
     .attr("id", "linegraph_title")
-    .attr("x", 80)
+    .attr("x", 85)
     .attr("y", 37)
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text("Per Year")
     .attr("font-size", 7);
     
-    var everything = d3.selectAll("svg > *");
+    var everything = d3.selectAll("svg > *"); // shift svg so everything is seen 
     everything.attr("transform", "translate(100,20)");
     
-    svg.append("g")
+    svg.append("g") // plot Y axis for Flights data
     .attr("stroke", barColor)
     .style("opacity", 1.0)
     .attr("transform", "translate(540,25)")
     .call(d3.axisRight(yScale_for_axis));
     
-    svg.append("text")
-    .text("UFO sightings vs Planes in the air")
+    svg.append("text") //Title
+    .text("UFO sightings vs Planes in the air") 
     .attr("x", 240)
     .attr("y", 50)
     .attr("font-size", 15);
@@ -226,13 +237,13 @@
         function filterFunction(d) {return d.Year >= 1970 && d.Year < 2014;} //cut off data at 1970 and at 2013
         var temp = data.filter(filterFunction);
         flightsData = temp;
-        var lineColor = "#DF740C";
-        flightsData.forEach(function (d,i) {
+        var lineColor = "#DF740C"; 
+        flightsData.forEach(function (d,i) { //plot Flights data
             if (i+1 != flightsData.length) {
             svg.append("line")
-            .attr("x1", xScale(d.Year))
+            .attr("x1", x(d.Year))
             .attr("y1", yScale(d.totalFlights))
-            .attr("x2", xScale(data[i+1].Year))
+            .attr("x2", x(data[i+1].Year))
             .attr("y2", yScale(data[i+1].totalFlights))
             .attr("stroke", lineColor)
             .style("opacity", 1.0)
