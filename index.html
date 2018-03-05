@@ -28,12 +28,26 @@
     <svg id = "map_svg" height="600" width="1200">
     </svg>
         
-    <!--Tron    Orange: #DF740C,TronYellow: #FFE64D,White: #E6FFFF,TronBlue: #6FC3DF,black: #0C141F,-->
+    
     <script>
+    
+    /**************************************
+    **************COLORS*******************
+    
+    Tron Orange: #DF740C
+    Tron Yellow: #FFE64D
+    Tron White: #E6FFFF
+    Tron Blue: #6FC3DF
+    Tron Black: #0C141F
+    Radar Green: #A2CC3E 
+    ***************************************/
         
     var barColor = "#6FC3DF";
     var lineColor = "#DF740C";
     var axisColor = "#FDF6ED";
+    var ufoPointColor = "#6FC3DF";
+    var airportPointColor = "#DF740C";
+    var importantPointColor = "#A2CC3E";
     var barOpacity = .7;
         
     var svg = d3.select("#hist_svg");
@@ -478,14 +492,14 @@
         return projection_usa(d)[1];
       })
       .style("opacity", 0.7)
-      .attr("fill", "#A2CC3E" );
+      .attr("fill", ufoPointColor );
 
       circles_usa = circles_usa.enter().append("circle")
       .attr("r", 1.4).merge(circles_usa)
       .data(airportPoints)
       .attr("r", 2)
       .style("opacity", 1.0)
-      .attr("fill", "red" )
+      .attr("fill", airportPointColor )
       .attr("cx", function (d) {
         return projection_usa(d)[0];
       })
@@ -500,7 +514,7 @@
       .data(importantPoints)
       .attr("r", 15)
       .style("opacity", 1.0)
-      .attr("fill", "purple" )
+      .attr("fill", importantPointColor )
       .attr("cx", function (d) {
         return projection_usa(d)[0];
       })
