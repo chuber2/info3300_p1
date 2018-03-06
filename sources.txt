@@ -6,3 +6,5 @@ https://data.worldbank.org/indicator/IS.AIR.DPRT
 
 Airport Locations:
 https://www.kaggle.com/flashgordon/locations-of-airports
+
+Graphs were inspired from bl.ocks.org(https://bl.ocks.org/mbostock/3883245) and from the notes in class
