@@ -34,6 +34,8 @@
     <p id = "p2">The following histogram plots the number of reported UFO sightings per year against the number of flights worldwide in that year. While the scales are different, the trends are the same. Could people be mistaking planes for UFOs?</p>
     </svg>
     
+    <h3 id= "hist_heading"> UFO sightings per year versus flight departures per year. </h3>
+    
     <h2>UFO sightings cluster around airports and cities in the United States.</h2>
     
     <p> To investigate our argument that UFOs are mistaken for planes, we focused in on sightings in the US, where reports had a very high density relative to other countries. We plotted the locations of each sighting in blue. In orange, we located major airports. The several green circles indicate a radius around the 7 busiest airports in the United States. The 8th green circle is the fabled mecca of UFO lore: Area 51.  </p>
@@ -62,7 +64,7 @@
     var barOpacity = .7;
         
     //var svg = d3.select("#hist_svg");
-    var svg = d3.select( "#p2" ).insert("svg")
+    var svg = d3.select( "#hist_heading" ).insert("svg")
         .attr("id", "hist_svg")
         .attr("width", 700)
         .attr("height", 450 );
@@ -162,7 +164,7 @@
     .style("text-anchor", "middle")
     .style("alignment-baseline", "central")
     .text(1970+(10*i))
-    .attr("font-size", 9)
+    .attr("font-size", 16)
     .attr("fill", axisColor);
     svg.append("line") // add tick marks for axes
     .attr("x1", 5+(100*i))
@@ -253,28 +255,10 @@
     svg.append("g") // plot Y axis for Flights data
     .attr("stroke", barColor)
     .style("opacity", 1.0)
-    .attr("class", "axis")
+    .attr("class", "UFO_axis")
+   
     .attr("transform", "translate(580,25)")
     .call(d3.axisRight(yScale_for_axis));
-    
-    svg.append("text") //Title
-    .text("UFO sightings") 
-    .attr("x", 385)
-    .attr("y", 50)
-    .attr("font-size", 19)
-    .attr("fill", axisColor);
-    svg.append("text") //Title
-    .text("v.") 
-    .attr("x", 440)
-    .attr("y", 70)
-    .attr("font-size", 19)
-    .attr("fill", axisColor);
-    svg.append("text") //Title
-    .text("Planes in Air") 
-    .attr("x", 390)
-    .attr("y", 85)
-    .attr("font-size", 19)
-    .attr("fill", axisColor);
     
     });
         
@@ -448,8 +432,8 @@
 
 
     svg2.append("text")
-    .attr("x", 20)
-    .attr("y", 500)
+    .attr("x", -100)
+    .attr("y", 400)
     .text("Each blue circle represents one UFO sighting.")
     .attr("fill", ufoPointColor);
         
