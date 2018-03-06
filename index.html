@@ -6,6 +6,7 @@
     <meta charset="utf-8">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="//d3js.org/topojson.v2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-annotation/2.1.0/d3-annotation.independent.js"></script>
 
     <link type="text/css" rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Karla|Space+Mono" rel="stylesheet">
@@ -20,13 +21,17 @@
     <h2> by Tayyaba Arshad, Chris Huber, and Shiva Lakshmanan</h2>
    
     <p>UFOs (Unidentified Flying Objects) are constantly referenced as proof that alien life is out there. But are the sightings for real? Using data from National UFO Reporting Center, we argue that UFO sightings are mistakes and fakes. </p>
-    <svg id="hist_svg" width="700" height="450">
-    </svg>
+    
         
-    <h3>Testing coordinates on world map</h3>
+    <h2>UFOs are a predominantly Western phenomenon.</h2>
+    
+    <p id = > Fact 1: If aliens flew by Earth regularly, then everyone around the phone-enabled world should be reporting sightings. Thus, we would expect the thousands of sightings to be roughly evenly distributed over the Earth's land masses. In the world map below, we plotted a random sample of 12,000 reports from an entire database of 80,000 reports. Note that increasing color indicates a higher density of reports. Which two countries stick out?</p>
 
     <svg id = "map_svg" height="600" width="1200">
     </svg>
+    <p id = "p2"> Description for Map 2</p>
+    </svg>
+    
         
     
     <script>
@@ -50,7 +55,11 @@
     var importantPointColor = "#A2CC3E";
     var barOpacity = .7;
         
-    var svg = d3.select("#hist_svg");
+    //var svg = d3.select("#hist_svg");
+    var svg = d3.select( "#content" ).append("svg")
+        .attr("id", "hist_svg")
+        .attr("width", 700)
+        .attr("height", 450 );
     var UFOdata;
     var bins;
     
@@ -434,8 +443,8 @@
 
     svg2.append("text")
     .attr("x", 20)
-    .attr("y", 550)
-    .text("Each green circle represents one UFO sighting")
+    .attr("y", 500)
+    .text("Each green circle represents one UFO sighting.")
     .attr("fill", "#A2CC3E");
 
 
@@ -527,12 +536,16 @@
         .attr("y", 550)
         .text("Each green circle represents one UFO sighting")
         .attr("fill", "#A2CC3E");
+        
+    
     }
-
+        
 
     console.log("Code after the d3.json() call is executed immediately.");
 
     </script>
+       
     </div><!--eND OF CONTENT DIV-->
+    
 </body>
 </html>
