@@ -68,6 +68,11 @@ path.country { fill: black; stroke: #888; }
     stroke: #FDF6ED;
 }
 
+.axis text{
+    fill: #DF740C;
+    stroke: none;
+}
+
 
 
 
