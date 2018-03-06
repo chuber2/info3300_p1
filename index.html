@@ -444,14 +444,15 @@
     return projection(d)[1];
     })
     .style("opacity", 0.7)
-    .attr("fill", "#A2CC3E" );
+    .attr("fill", ufoPointColor );
 
 
     svg2.append("text")
     .attr("x", 20)
     .attr("y", 500)
-    .text("Each green circle represents one UFO sighting.")
-    .attr("fill", "#A2CC3E");
+    .text("Each blue circle represents one UFO sighting.")
+    .attr("fill", ufoPointColor);
+        
 
 
     }
@@ -538,10 +539,20 @@
       });
 
       svg3.append("text")
-        .attr("x", 20)
-        .attr("y", 550)
-        .text("Each green circle represents one UFO sighting")
-        .attr("fill", "#A2CC3E");
+        .attr("x", -120)
+        .attr("y", 450)
+        .text("Each blue circle represents one UFO sighting.")
+        .attr("fill", ufoPointColor);
+     svg3.append("text")
+        .attr("x", -120)
+        .attr("y", 480)
+        .text("Each orange circle represents an airport.")
+        .attr("fill", airportPointColor);
+    svg3.append("text")
+        .attr("x", -120)
+        .attr("y", 510)
+        .text("Each green circle is a radius around one of the US's busiest airports.")
+        .attr("fill", importantPointColor);
         
     
     }
